@@ -1,113 +1,100 @@
-FCP Live Analyzer
 
-FCP Live Analyzer is a software tool designed specifically for singers, vocal coaches, researchers, and voice scientists. This tool enables comprehensive real-time and offline acoustic analysis, focusing on the Formant Cluster Prominence (FCP), an important metric for evaluating vocal projection and resonance, especially related to the singer's formant.
+# FCP Live Analyzer
 
-What is Formant Cluster Prominence (FCP)?
+![FCP Live Analyzer GUI](figures/gui.png)
 
-Formant Cluster Prominence (FCP) quantifies how pronounced the cluster of higher formants (typically between 2–4 kHz) is relative to the general spectral trend of the voice. This prominence directly correlates with the clarity, brilliance, and projection capacity characteristic of well-trained singing voices, especially in classical music.
+**FCP Live Analyzer** is a user-friendly software tool specifically designed for singers, voice researchers, and voice teachers to measure and train vocal techniques related to the **Formant Cluster Prominence (FCP)**. This acoustic measure is crucial for evaluating the "singer's formant," an acoustic feature prominent in classically trained singing voices.
 
-Key Features
+---
 
-Real-time Analysis (LIVE Mode): Provides immediate feedback on vocal performance, assisting singers and vocal coaches during practice sessions.
+## What is Formant Cluster Prominence (FCP)?
 
-Load Audio Analysis: Allows offline analysis of pre-recorded audio files, suitable for detailed research and documentation.
+Formant Cluster Prominence (FCP) is an acoustic metric proposed by **Lã et al. (2021)**. It quantifies the prominence of the higher formant cluster, typically in the frequency range of **2–4 kHz**, which is essential for the singer’s formant phenomenon. A strong singer’s formant significantly improves vocal projection and audibility over orchestral accompaniment.
 
-Long-Term Average Spectrum (LTAS): Accurately calculates and displays LTAS, facilitating detailed acoustic research.
+The FCP specifically represents the difference between the peak of the long-term average spectrum (LTAS) in the **2–4 kHz range** and a trend line calculated from **1–5 kHz**.
 
-Detailed Calculations: Performs precise calculations including Lmax for different frequency bands, linear spectral trend, and FCP values.
+---
 
-Dynamic Visualization: Clearly displays the LTAS and highlights the crucial 2-4 kHz frequency band in real-time.
+## Key Features
 
-Export Results: Enables exporting analyzed data as CSV for further statistical analysis or documentation.
+### 1. Load Audio File and Playback Analysis
+- Easily load `.wav` audio files.
+- Segments voiced regions from audio and calculates LTAS.
+- Displays dynamic FCP values during audio playback with visual feedback.
+- Calculates and displays the Global FCP.
 
-Splash Screen: Smooth startup with a professional, visually appealing splash screen.
+### 2. Live Analysis and Real-time Feedback
+- Real-time analysis via microphone.
+- Continuously updates current FCP during singing.
+- Displays dynamic mean FCP value.
 
-Usage
+### 3. Detailed Acoustic Analysis
+- LTAS calculation following methodologies by Lã et al. (2021).
+- Graphical visualization of LTAS and FCP.
+- Precise numerical outputs for detailed comparative analyses.
 
-Running the Software
+### 4. Export and Reporting
+- Exportable results as `.csv` files.
 
-Download the latest release from the releases page.
+### 5. Professional and Research Use
+- Ideal for singers, vocal coaches, researchers, and educators.
+- Enhances vocal projection and formant tuning.
+- Facilitates scientific studies on vocal techniques.
 
-Unzip and execute the application (FCP_Live_Analyzer.exe).
+---
 
-Real-Time Analysis (LIVE Mode)
+## Calculation Methodology
 
-Connect a microphone.
+- Compute the LTAS of voiced segments.
+- Identify the maximum LTAS value in 2–4 kHz band.
+- Fit a trend line across the 1–5 kHz range.
+- FCP is the difference between the peak in the 2–4 kHz range and the trend line value.
 
-Click LIVE to begin real-time analysis.
+---
 
-Monitor your vocal output and observe changes in real-time FCP.
+## Requirements and Installation
 
-The mean FCP value updates continuously, providing cumulative feedback.
+### Software Requirements:
+- Python (≥ 3.10)
+- Praat software
 
-Analyzing Pre-recorded Files
+### Python Dependencies:
+```bash
+pip install numpy scipy matplotlib sounddevice soundfile parselmouth
+```
 
-Click LOAD to select a WAV audio file.
+### Building the Software
+```bash
+pyinstaller --onedir --windowed --noconfirm --clean --icon=logo_fcp.ico fcp_live_gui.py
+```
 
-After loading, view detailed LTAS plots and FCP values.
+---
 
-Play the audio and observe dynamic feedback on vocal performance.
+## Usage
 
-Export the data using the EXPORT CSV button.
+### GUI Interface
+- **LOAD**: Load `.wav` file.
+- **LIVE**: Real-time microphone input.
+- **PLAY**: Playback loaded audio.
+- **EXPORT CSV**: Export data for review.
 
-Technical Details
+---
 
-FCP calculation is performed using the following formula:
+## Contributions
+Feel free to contribute, open issues, or suggest new features.
 
+---
 
+## References
+- Lã et al. (2023). *Journal of Voice*, 37(4), 631.e7-631.e17.
+- Sundberg, J. (1995). *Quarterly Progress and Status Report*, 83–96.
 
-Lmax(2-4 kHz): Maximum LTAS amplitude between 2 and 4 kHz.
+---
 
-Trend(f_peak): Linear trend amplitude at the frequency of the maximum within the 2-4 kHz range.
+## Contact
+- **Developer**: Tiago Lima Bicalho Cruz, PhD
+- **Email**: tiagolbc@gmail.com
 
-Requirements
+---
 
-The software is developed in Python and requires the following packages:
-
-numpy
-
-matplotlib
-
-sounddevice
-
-scipy
-
-parselmouth
-
-pillow
-
-To install dependencies:
-
-pip install -r requirements.txt
-
-Contributing
-
-Contributions are welcome! Please follow the standard GitHub workflow:
-
-Fork the repository.
-
-Create your feature branch (git checkout -b feature/YourFeature).
-
-Commit your changes (git commit -m 'Add YourFeature').
-
-Push to the branch (git push origin feature/YourFeature).
-
-Open a Pull Request.
-
-Citation
-
-If you use this software in your research, please cite it as:
-
-Cruz, T. L. B. (2024). FCP Live Analyzer: Real-Time Acoustic Analysis for Singers [Software]. Retrieved from https://github.com/yourusername/FCPLiveAnalyzer
-
-License
-
-This software is licensed under the MIT License. See LICENSE.txt for details.
-
-Contact
-
-Tiago Lima Bicalho Cruz, PhD
-
-Email: tiagolbc@gmail.com
-
-Enjoy your vocal explorations and analysis with FCP Live Analyzer!
+Enjoy using the **FCP Live Analyzer**!
