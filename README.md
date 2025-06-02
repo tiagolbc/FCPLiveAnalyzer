@@ -86,8 +86,8 @@ Feel free to contribute, open issues, or suggest new features.
 ---
 
 ## References
-- Lã et al. (2023). *Journal of Voice*, 37(4), 631.e7-631.e17.
-- Sundberg, J. (1995). *Quarterly Progress and Status Report*, 83–96.
+- Lã, F. M. B., Silva, L. S., & Granqvist, S. (2023). Long-term average spectrum characteristics of Portuguese Fado-Canção from Coimbra. Journal of Voice, 37(4), 631.e1-631.e7. https://doi.org/10.1016/j.jvoice.2021.03.021.
+- Sundberg, J. (1995). The Singer's Formant Revisited. Quarterly Progress and Status Report, 36(2-3), 83–96. Royal Institute of Technology (KTH), Stockholm.
 
 ---
 
