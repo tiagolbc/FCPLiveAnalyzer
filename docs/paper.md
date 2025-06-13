@@ -126,19 +126,19 @@ This approach is robust to differences in loudness, vowel, and recording setup.
 
 A professional tenor singing an operatic phrase, displaying a pronounced FCP (>15 dB) and a prominent LTAS peak near 3 kHz.
 
-(Insert figure: figures/tenor_example.png)
+![Tenor FCP](../figures/tenor_example.png){#fig:tenor_example width=90%}
 
 ### Example 2: Female Opera Singer—Sustained Vowel
 
 A female opera singer performing a sustained /a/ vowel, exhibiting a clear spectral clustering in 2–4 kHz.
 
-(Insert figure: figures/female_sustained.png)
+![Alto FCP](../figures/female_sustained.png){#fig:female_sustained width=90%}
 
 ### Example 3: Rock Singer Without Singer’s Formant
 
 A male rock singer in a typical rock ballad passage, with no visible “formant cluster” in 2–4 kHz and low FCP values.
 
-(Insert figure: figures/rock_example.png)
+![Rock Singer FCP](../figures/rock_example.png){#fig:rock_example width=90%}
 
 ## Comparison with Existing Tools
 
