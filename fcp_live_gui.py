@@ -1,3 +1,10 @@
+import sys
+from pathlib import Path
+
+current_dir = Path(__file__).parent
+src_dir = current_dir / "src"
+sys.path.insert(0, str(src_dir))
+
 import tkinter as tk
 from tkinter import ttk, messagebox
 import numpy as np
@@ -10,17 +17,14 @@ import matplotlib.pyplot as plt
 from fcp_ltas import compute_ltas_like_praat, compute_fcp_praat_style, get_fcp_color
 from fcp_voiced_ltas import compute_ltas_voiced_like_praat, extract_only_voiced_segments
 import parselmouth
-import sys
 import threading
 import time
 import os
 from PIL import Image, ImageTk
 import csv
 import statistics
-from PIL import Image, ImageTk
 import soundfile as sf
 from splash import show_splash_screen
-import sys
 
 
 FS = 44100
