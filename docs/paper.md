@@ -51,11 +51,13 @@ FCP is an acoustic measure designed to quantify the prominence of the cluster of
 
 Mathematically, FCP is expressed as:
 
-\[ FCP = L_{\text{peak}}(2-4\,\text{kHz}) - L_{\text{trend}}(f_{\text{peak}}) \]
+$$
+FCP = L_{\text{peak}}(2\text{-}4\,\text{kHz}) - L_{\text{trend}}(f_{\text{peak}})
+$$
 
 Where:
-- \( L_{\text{peak}}(2-4\,\text{kHz}) \) is the highest spectral level in the 2–4 kHz range of the LTAS.
-- \( L_{\text{trend}}(f_{\text{peak}}) \) is the value of the linear regression (trendline) fitted to the LTAS between 1 and 5 kHz, evaluated at the frequency \( f_{\text{peak}} \) where the maximum occurs.
+- $L_{\text{peak}}(2\text{-}4\,\text{kHz})$ is the highest spectral level in the 2–4 kHz range of the LTAS.
+- $L_{\text{trend}}(f_{\text{peak}})$ is the value of the linear regression (trendline) fitted to the LTAS between 1 and 5 kHz, evaluated at the frequency $f_{\text{peak}}$ where the maximum occurs.
 
 This measure is less sensitive to variations in vowel, loudness, and spectral slope, allowing comparisons across singers, voice types, and singing styles [@La2023].
 
