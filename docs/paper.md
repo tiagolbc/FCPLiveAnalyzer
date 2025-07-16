@@ -87,7 +87,7 @@ In summary, FCP is a scientifically grounded, practical metric bridging voice sc
 
 - Real-time (live) and offline (batch) measurement of FCP from microphone or file input.
 - Graphical display of Long-Term Average Spectrum (LTAS), including color-coded 2–4 kHz band.
-- Display of FCP and supporting metrics: \( L_{\text{max}_0_2kHz} \), \( L_{\text{max}_2_5kHz} \), \( L_{\text{max}_5_8kHz} \), \( L_{\text{max}_2_4kHz} \), deltas, trendline value at FCP peak.
+- Display of FCP and supporting metrics: \( $L_{\text{max}_0_2kHz} \), \( L_{\text{max}_2_5kHz} \), \( L_{\text{max}_5_8kHz} \), \( L_{\text{max}_2_4kHz} \), deltas, trendline value at FCP peak.
 - Export of analysis results to CSV for statistical or pedagogical tracking.
 - Automatic calculation of Global FCP (from all voiced audio) and Mean FCP (running average during live mode).
 - Intuitive GUI for users with no programming experience.
