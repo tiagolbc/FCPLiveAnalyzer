@@ -96,7 +96,7 @@ Feel free to contribute, open issues, or suggest new features.
 - **Email**: tiagolbc@gmail.com
 
 ## Citation
-- Cruz, T. L. B. (2025). FCP Live Analyzer: Real-Time Acoustic Analysis of Singer’s Formant and Formant Cluster Prominence (Version 1.0.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.17114010
+- Cruz, T. L. B. (2025). FCP Live Analyzer: Real-Time Acoustic Analysis of Singer’s Formant and Formant Cluster Prominence (Version 1.2.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.17114010
 
 ---
 
