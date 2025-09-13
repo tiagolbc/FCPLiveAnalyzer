@@ -154,7 +154,7 @@ The application supports automatic, structured export of analysis artifacts to f
 
 A professional tenor singing an operatic phrase, displaying a pronounced FCP (>15 dB) and a prominent LTAS peak near 3 kHz.
 
-![Tenor FCP](../figures/tenor_example.png){#fig:tenor_example width=90%}
+![Tenor FCP](/figures/tenor_example.png){#fig:tenor_example width=90%}
 
 ### Example 2: Female Opera Singer—Sustained Vowel
 
