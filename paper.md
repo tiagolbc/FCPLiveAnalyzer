@@ -1,8 +1,23 @@
-# FCP Live Analyzer: Real-Time and Batch Measurement of Formant Cluster Prominence for Singing Voice Research and Pedagogy
-
-**Authors**
-
-- Tiago Lima Bicalho Cruz (Independent Researcher, ORCID: [0000-0002-8355-5436](https://orcid.org/0000-0002-8355-5436), [tiagolbc@gmail.com](mailto:tiagolbc@gmail.com))
+---
+title: 'FCP Live Analyzer: Real-Time and Batch Measurement of Formant Cluster Prominence for Singing Voice Research and Pedagogy'
+tags:
+  - Python
+  - acoustics
+  - singing voice
+  - voice science
+  - LTAS
+  - pedagogy
+authors:
+  - name: Tiago Lima Bicalho Cruz
+    orcid: 0000-0002-8355-5436
+    corresponding: true
+    affiliation: 1
+affiliations:
+  - name: FonoTech Academy, Brazil
+    index: 1
+date: 13 September 2025
+bibliography: paper.bib
+---
 
 ## Summary
 
@@ -88,7 +103,7 @@ In summary, FCP is a scientifically grounded, practical metric bridging voice sc
 
 - Real-time (live) and offline (batch) measurement of FCP from microphone or file input.
 - Graphical display of Long-Term Average Spectrum (LTAS), including color-coded 2–4 kHz band.
-- Display of FCP and supporting metrics: \(L_{\max,0\text{–}2\,\mathrm{kHz}}\), \(L_{\max,2\text{–}5\,\mathrm{kHz}}\), \(L_{\max,5\text{–}8\,\mathrm{kHz}}\), \(L_{\max,2\text{–}4\,\mathrm{kHz}}\), deltas, and the trendline value at the FCP peak.
+- Display of FCP and supporting metrics: $L_{\max,0-2\,\mathrm{kHz}},\ L_{\max,2-5\,\mathrm{kHz}},\ L_{\max,5-8\,\mathrm{kHz}},\ L_{\max,2-4\,\mathrm{kHz}}$, deltas, and the trendline value at the FCP peak.
 - Export of analysis results for statistical or pedagogical tracking.
 - Automatic calculation of Global FCP (from all voiced audio) and Mean FCP (running average during live mode).
 - Intuitive GUI for users with no programming experience.
@@ -110,14 +125,14 @@ The FCP algorithm, as implemented, follows the description by Lã et al. (2023):
 
 1. Compute the LTAS using 40 ms Hanning windows with 10 ms hop size.
 2. For each window, compute the spectrum in dB and average across windows.
-3. Find the maximum value within 2–4 kHz: \(L_{\text{peak}}\).
+3. Find the maximum value within 2–4 kHz: $L_{\mathrm{peak}}$.
 4. Fit a linear regression (trendline) to the LTAS between 1–5 kHz.
-5. Evaluate the trendline at the frequency of the spectral maximum in 2–4 kHz: \(L_{\text{trend}}(f_{\text{peak}})\).
+5. Evaluate the trendline at the frequency of the spectral maximum in 2–4 kHz: $L_{\mathrm{trend}}(f_{\mathrm{peak}})$.
 6. Subtract to obtain FCP:
 
-\[
-\mathrm{FCP} = L_{\text{peak}}(2\text{–}4\,\mathrm{kHz}) - L_{\text{trend}}(f_{\text{peak}})
-\]
+$$
+\mathrm{FCP} = L_{\mathrm{peak}}(2-4\,\mathrm{kHz}) - L_{\mathrm{trend}}(f_{\mathrm{peak}})
+$$
 
 This approach is robust to differences in loudness, vowel, and recording setup.
 
