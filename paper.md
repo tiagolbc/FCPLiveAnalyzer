@@ -52,12 +52,13 @@ FCP is an acoustic measure designed to quantify the prominence of the cluster of
 Mathematically, FCP is expressed as:
 
 $$
-\mathrm{FCP} = L_{\text{peak}}(2\text{–}4\,\mathrm{kHz}) - L_{\text{trend}}(f_{\text{peak}})
+\mathrm{FCP} = L_{\mathrm{peak}}(2-4\,\mathrm{kHz}) - L_{\mathrm{trend}}(f_{\mathrm{peak}})
 $$
 
 Where:
-- \(L_{\text{peak}}(2\text{–}4\,\mathrm{kHz})\) is the highest spectral level in the 2–4 kHz range of the LTAS.
-- \(L_{\text{trend}}(f_{\text{peak}})\) is the value of the linear regression (trendline) fitted to the LTAS between 1 and 5 kHz, evaluated at the frequency \(f_{\text{peak}}\) where the maximum occurs.
+
+- $L_{\mathrm{peak}}(2-4\,\mathrm{kHz})$ is the highest spectral level in the 2–4 kHz range of the LTAS.
+- $L_{\mathrm{trend}}(f_{\mathrm{peak}})$ is the value of the linear regression (trendline) fitted to the LTAS between 1 and 5 kHz, evaluated at the frequency $f_{\mathrm{peak}}$ where the maximum occurs.
 
 This measure is less sensitive to variations in vowel, loudness, and spectral slope, allowing comparisons across singers, voice types, and singing styles [@La2023].
 
@@ -177,5 +178,3 @@ While several programs offer LTAS or spectral analysis (e.g., Praat, VoceVista, 
 The development of FCP Live Analyzer was inspired by research on the acoustic properties of professional singing, especially the foundational work of Johan Sundberg and recent advances by Filipa Lã and colleagues. The software is dedicated to the international community of singers, teachers, and voice scientists.
 
 ## References
-
-\bibliography{paper}
