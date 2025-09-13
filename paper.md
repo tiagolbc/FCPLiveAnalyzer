@@ -6,7 +6,7 @@
 
 ## Summary
 
-**FCP Live Analyzer** is a free, open-source tool for acoustic analysis of the singing voice, focused on the measurement of *Formant Cluster Prominence* (FCP)—a robust indicator of the “singer’s formant” phenomenon. The software provides both real-time (“live”) feedback and batch file analysis, supporting pedagogical, clinical, and research applications. Results can be exported to CSV for further analysis. FCP Live Analyzer implements the algorithm as described by Lã et al. (2023), enabling objective measurement and visualization of the formant cluster responsible for vocal brilliance and projection in classical singing.
+**FCP Live Analyzer** is a free, open-source tool for acoustic analysis of the singing voice, focused on the measurement of *Formant Cluster Prominence* (FCP)—a robust indicator of the “singer’s formant” phenomenon. The software provides both real-time (“live”) feedback and batch file analysis, supporting pedagogical, clinical, and research applications. Results can be exported for further analysis. FCP Live Analyzer implements the algorithm as described by Lã et al. (2023), enabling objective measurement and visualization of the formant cluster responsible for vocal brilliance and projection in classical singing.
 
 ## Statement of Need
 
@@ -52,12 +52,12 @@ FCP is an acoustic measure designed to quantify the prominence of the cluster of
 Mathematically, FCP is expressed as:
 
 $$
-FCP = L_{\text{peak}}(2\text{-}4\,\text{kHz}) - L_{\text{trend}}(f_{\text{peak}})
+\mathrm{FCP} = L_{\text{peak}}(2\text{–}4\,\mathrm{kHz}) - L_{\text{trend}}(f_{\text{peak}})
 $$
 
 Where:
-- $L_{\text{peak}}(2\text{-}4\,\text{kHz})$ is the highest spectral level in the 2–4 kHz range of the LTAS.
-- $L_{\text{trend}}(f_{\text{peak}})$ is the value of the linear regression (trendline) fitted to the LTAS between 1 and 5 kHz, evaluated at the frequency $f_{\text{peak}}$ where the maximum occurs.
+- \(L_{\text{peak}}(2\text{–}4\,\mathrm{kHz})\) is the highest spectral level in the 2–4 kHz range of the LTAS.
+- \(L_{\text{trend}}(f_{\text{peak}})\) is the value of the linear regression (trendline) fitted to the LTAS between 1 and 5 kHz, evaluated at the frequency \(f_{\text{peak}}\) where the maximum occurs.
 
 This measure is less sensitive to variations in vowel, loudness, and spectral slope, allowing comparisons across singers, voice types, and singing styles [@La2023].
 
@@ -87,10 +87,12 @@ In summary, FCP is a scientifically grounded, practical metric bridging voice sc
 
 - Real-time (live) and offline (batch) measurement of FCP from microphone or file input.
 - Graphical display of Long-Term Average Spectrum (LTAS), including color-coded 2–4 kHz band.
-- Display of FCP and supporting metrics: \( L_{\text{max}_0_2kHz} \), \( L_{\text{max}_2_5kHz} \), \( L_{\text{max}_5_8kHz} \), \( L_{\text{max}_2_4kHz} \), deltas, trendline value at FCP peak.
-- Export of analysis results to CSV for statistical or pedagogical tracking.
+- Display of FCP and supporting metrics: \(L_{\max,0\text{–}2\,\mathrm{kHz}}\), \(L_{\max,2\text{–}5\,\mathrm{kHz}}\), \(L_{\max,5\text{–}8\,\mathrm{kHz}}\), \(L_{\max,2\text{–}4\,\mathrm{kHz}}\), deltas, and the trendline value at the FCP peak.
+- Export of analysis results for statistical or pedagogical tracking.
 - Automatic calculation of Global FCP (from all voiced audio) and Mean FCP (running average during live mode).
 - Intuitive GUI for users with no programming experience.
+- One-click screenshot of the current LTAS plot (PNG), suitable for reports and teaching material.
+- Batch processing of multiple WAV files with per-file summaries and full per-window metrics.
 
 ### Implementation and Architecture
 
@@ -107,12 +109,14 @@ The FCP algorithm, as implemented, follows the description by Lã et al. (2023):
 
 1. Compute the LTAS using 40 ms Hanning windows with 10 ms hop size.
 2. For each window, compute the spectrum in dB and average across windows.
-3. Find the maximum value within 2–4 kHz: \( L_{\text{peak}} \).
+3. Find the maximum value within 2–4 kHz: \(L_{\text{peak}}\).
 4. Fit a linear regression (trendline) to the LTAS between 1–5 kHz.
-5. Evaluate the trendline at the frequency of the spectral maximum in 2–4 kHz: \( L_{\text{trend}}(f_{\text{peak}}) \).
+5. Evaluate the trendline at the frequency of the spectral maximum in 2–4 kHz: \(L_{\text{trend}}(f_{\text{peak}})\).
 6. Subtract to obtain FCP:
 
-\[ FCP = L_{\text{peak}}(2-4\,\text{kHz}) - L_{\text{trend}}(f_{\text{peak}}) \]
+\[
+\mathrm{FCP} = L_{\text{peak}}(2\text{–}4\,\mathrm{kHz}) - L_{\text{trend}}(f_{\text{peak}})
+\]
 
 This approach is robust to differences in loudness, vowel, and recording setup.
 
@@ -120,7 +124,29 @@ This approach is robust to differences in loudness, vowel, and recording setup.
 
 - **File mode (Load File):** Analyze any WAV file. Displays the LTAS and all metrics. Computes “Global FCP” using all voiced audio.
 - **Live mode:** Provides real-time feedback. Displays FCP for each rolling buffer. The “Mean FCP” label shows the running mean for the current live session.
-- **Export:** All analyzed windows are exportable to CSV, with both per-window and global means for all metrics.
+- **Export:** All analyzed windows are exportable, with both per-window and global means for all metrics.
+- **Batch mode:** Processes multiple WAV files in one step, generating per-file summaries and per-window metrics suitable for large-scale studies.
+- **Screenshot:** Saves the current LTAS plot as a high-resolution PNG via a file dialog.
+
+### Data Export and Organization
+
+The application supports automatic, structured export of analysis artifacts to facilitate reproducibility and sharing:
+
+- **Auto-export on STOP (Live or Playback):** When stopping a session, a timestamped directory is created under `Exports/LiveOrPlayback_YYYYMMDD_HHMMSS/` containing:
+  - CSV with analysis data (`fcp_live.csv` for live sessions or `fcp_windows.csv` for file playback).
+  - Optional Excel (`.xlsx`) containing the same data and a summary sheet (if `pandas` is available).
+  - `fcp_evolution.png` (FCP over time).
+  - `ltas_current.png` (current LTAS figure).
+
+- **Batch outputs:** Running batch analysis creates `Exports/Batch_YYYYMMDD_HHMMSS/` with:
+  - `batch_summary.csv` (one row per file: duration, global voiced-only FCP, band maxima, window-based mean/SD FCP, window count).
+  - `batch_windows.csv` (all per-window FCP metrics across files).
+  - Optional `batch_results.xlsx` (summary + windows sheets, if `pandas` is available).
+  - Per-file subfolders `/<file_stem>/` containing:
+    - `fcp_evolution.png` (FCP vs. time for that file).
+    - `ltas_current.png` (global voiced-only LTAS with the 2–4 kHz band highlighted and color-coded by global FCP).
+
+- **Organization:** All outputs are grouped into clearly named, timestamped folders under `Exports/`, keeping runs separate and traceable.
 
 ## Illustrative Examples
 
