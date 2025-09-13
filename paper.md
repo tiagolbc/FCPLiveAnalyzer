@@ -160,13 +160,13 @@ A professional tenor singing an operatic phrase, displaying a pronounced FCP (>1
 
 A female opera singer performing a sustained /a/ vowel, exhibiting a clear spectral clustering in 2–4 kHz.
 
-![Alto FCP](../figures/female_sustained.png){#fig:female_sustained width=90%}
+![Alto FCP](/figures/female_sustained.png){#fig:female_sustained width=90%}
 
 ### Example 3: Rock Singer Without Singer’s Formant
 
 A male rock singer in a typical rock ballad passage, with no visible “formant cluster” in 2–4 kHz and low FCP values.
 
-![Rock Singer FCP](../figures/rock_example.png){#fig:rock_example width=90%}
+![Rock Singer FCP](/figures/rock_example.png){#fig:rock_example width=90%}
 
 ## Comparison with Existing Tools
 
