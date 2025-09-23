@@ -53,6 +53,7 @@ class FCPLiveGUI:
         self.precomputed_buffer = []  # Precomputed FCP buffer (file playback only)
         self.playback_pointer = 0
         self.stop_playback = False  # stop flag used in stop_live()
+        self.mode = 'idle'  # 'idle' | 'live' | 'playback'
 
         # 1. TOP BAR - buttons in one single row
         top_bar = tk.Frame(root, bg="#e6e6e6")
@@ -65,7 +66,8 @@ class FCPLiveGUI:
         self.load_button.pack(side=tk.LEFT, padx=5, pady=10)
         self.play_button = ttk.Button(top_bar, text="PLAY", command=self.play_loaded_audio, state=tk.DISABLED)
         self.play_button.pack(side=tk.LEFT, padx=5, pady=10)
-        self.stop_button = ttk.Button(top_bar, text="STOP", command=self.stop_live, state=tk.DISABLED)
+        self.stop_button = ttk.Button(top_bar, text="STOP", command=lambda: self.stop_live(do_export=True),
+                                      state=tk.DISABLED)
         self.stop_button.pack(side=tk.LEFT, padx=5, pady=10)
 
         # Batch analysis button (NEW)
@@ -213,17 +215,20 @@ class FCPLiveGUI:
         self.running = True
         self.live_button.config(state=tk.DISABLED)
         self.stop_button.config(state=tk.NORMAL)
+        self.mode = 'live'
+
         self.update_plot()
 
-    def stop_live(self):
+    def stop_live(self, *, do_export=True):
         """
-        Stop LIVE or PLAYBACK, then auto-export session data & images to a timestamped folder.
+        Stop LIVE or PLAYBACK. Auto-export only if this stop comes from LIVE mode.
         """
         self.running = False
         self.stop_playback = True
-        sd.stop()  # stop audio immediately
+        sd.stop()
         self.live_button.config(state=tk.NORMAL)
         self.stop_button.config(state=tk.DISABLED)
+
         if self.stream is not None:
             self.stream.stop()
             self.stream.close()
@@ -232,30 +237,27 @@ class FCPLiveGUI:
             self.root.after_cancel(self.after_id)
             self.after_id = None
 
-        # --- Auto-export on STOP ---
+        # ---- Auto-export ONLY for LIVE sessions ----
         try:
-            out_dir = self._ensure_exports_dir(prefix="LiveOrPlayback")
-            # export CSV (live session history or precomputed file windows if available)
-            if self.precomputed_buffer:
-                self._export_csv_to_path(self.precomputed_buffer, os.path.join(out_dir, "fcp_windows.csv"))
-                self._export_excel_optional(self.precomputed_buffer, os.path.join(out_dir, "fcp_windows.xlsx"))
-                self._save_fcp_evolution_plot(self.precomputed_buffer,
-                                              source="precomputed",
-                                              png_path=os.path.join(out_dir, "fcp_evolution.png"))
-                self.fig.savefig(os.path.join(out_dir, "ltas_current.png"), dpi=300)
-            elif self.analysis_history:
+            if do_export and (self.mode == 'live') and self.analysis_history:
+                out_dir = self._ensure_exports_dir(prefix="Live")
+                # CSV e (opcional) Excel a partir do histórico do LIVE
                 self._export_csv_to_path(self.analysis_history, os.path.join(out_dir, "fcp_live.csv"))
                 self._export_excel_optional(self.analysis_history, os.path.join(out_dir, "fcp_live.xlsx"))
+                # Plot de evolução (LIVE usa índice * UPDATE_INTERVAL)
                 self._save_fcp_evolution_plot(self.analysis_history,
                                               source="live",
                                               png_path=os.path.join(out_dir, "fcp_evolution.png"))
+                # LTAS
                 self.fig.savefig(os.path.join(out_dir, "ltas_current.png"), dpi=300)
-            messagebox.showinfo("Export", f"Auto-export completed:\n{out_dir}")
+                messagebox.showinfo("Export", f"Auto-export completed:\n{out_dir}")
         except Exception as e:
             messagebox.showwarning("Export warning", f"Auto-export skipped or failed:\n{e}")
 
+
     def load_audio(self):
-        self.stop_live()
+        # Stop anything running, but DO NOT export when simply preparing to load a file
+        self.stop_live(do_export=False)
         self.analysis_history.clear()
         self.precomputed_buffer = []
         self.playback_pointer = 0
@@ -339,6 +341,8 @@ class FCPLiveGUI:
                 self.play_button.config(state=tk.NORMAL)
                 self.export_button.config(state=tk.NORMAL)
                 messagebox.showinfo("Ready", "Audio loaded and processed. Ready to play!")
+                self.mode = 'idle'
+
             else:
                 self.fcp_label.config(text="FCP = -- dB", fg='gray')
                 self.fcp_mean_label.config(text="Global FCP = -- dB")
@@ -368,6 +372,7 @@ class FCPLiveGUI:
         audio = audio / np.max(np.abs(audio) + 1e-6)
 
         self.stop_playback = False
+        self.mode = 'playback'
         self.stop_button.config(state=tk.NORMAL)
         self.live_button.config(state=tk.DISABLED)
 
@@ -424,6 +429,7 @@ class FCPLiveGUI:
                 self.root.after(0, lambda: self.stop_button.config(state=tk.DISABLED))
                 self.root.after(0, lambda: self.live_button.config(state=tk.NORMAL))
                 self.stop_playback = False
+                self.mode = 'idle'
 
         t = threading.Thread(target=run_playback)
         t.daemon = True
@@ -649,7 +655,6 @@ class FCPLiveGUI:
                             os.path.join(file_dir, "ltas_current.png"),
                             fcp_value=global_fcp
                         )
-
 
                 except Exception as file_err:
                     summary_rows.append({
