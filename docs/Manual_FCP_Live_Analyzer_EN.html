@@ -1,0 +1,444 @@
+<html><head><meta charset='utf-8'><title>Manual_FCP_Live_Analyzer_EN</title><style>
+body { font-family: sans-serif; font-size: 10pt; line-height: 1.4; color: #111; }
+h1 { font-size: 20pt; color: #1d4ed8; margin-bottom: 4pt; }
+h2 { font-size: 14pt; color: #1d4ed8; margin-top: 14pt; border-bottom: 1px solid #cbd5e1; }
+table { border-collapse: collapse; width: 100%; margin: 6pt 0; }
+th, td { border: 1px solid #cbd5e1; padding: 3pt 5pt; font-size: 8.5pt; vertical-align: top; }
+th { background: #e2e8f0; }
+code { font-family: monospace; font-size: 8.5pt; background: #f1f5f9; }
+img { width: 100%; }
+body { max-width: 900px; margin: 30px auto; padding: 0 20px; }</style></head><body><h1>FCP Live Analyzer 2.0 — User manual</h1>
+<p>Tiago Lima Bicalho Cruz · version 2.0.0 · November 2026</p>
+<p>FCP Live Analyzer measures, live or from files, the <strong>Formant Cluster Prominence (FCP)</strong>: how much the
+clustering of resonances R3–R5 (the "singer's formant") stands out in the long-term average spectrum (LTAS)
+of the voice. It follows the definition of Lã, Silva and Granqvist (2023) and also reports the band measures of
+the same paper (Lmax and ΔL1–ΔL4).</p>
+<h2>1. What the program measures</h2>
+<p><img alt="Global LTAS of a tenor with the trendline and the FCP" src="img/fcp_definition_en.png" /></p>
+<table>
+<thead>
+<tr>
+<th>Measure</th>
+<th>Definition (Lã et al., 2023)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LTAS</td>
+<td>Long-term average spectrum of the voiced segments only. Hanning window, 350 Hz bandwidth, power average.</td>
+</tr>
+<tr>
+<td>Trendline</td>
+<td>Line fitted to the LTAS between 1 and 5 kHz, linear in log frequency (straight on a logarithmic axis, as in the paper's figures).</td>
+</tr>
+<tr>
+<td><strong>FCP</strong></td>
+<td><strong>Largest difference between the LTAS and the trendline inside 2–4 kHz.</strong> The frequency where it occurs is also reported.</td>
+</tr>
+<tr>
+<td>Lmax(0–2), Lmax(2–5), Lmax(5–8)</td>
+<td>Maximum LTAS level in each band (kHz).</td>
+</tr>
+<tr>
+<td>ΔL1</td>
+<td>Lmax(0–2) − Lmax(2–5) (Hammarberg index)</td>
+</tr>
+<tr>
+<td>ΔL2</td>
+<td>Lmax(2–5) − Lmax(5–8)</td>
+</tr>
+<tr>
+<td>ΔL3</td>
+<td>ΔL1 − ΔL2</td>
+</tr>
+<tr>
+<td>ΔL4</td>
+<td>Lmax(0–2) − Lmax(5–8)</td>
+</tr>
+<tr>
+<td>Leq (C)</td>
+<td>C-weighted equivalent level of the voice. In dB SPL when the system is calibrated.</td>
+</tr>
+<tr>
+<td>Buzz (experimental)</td>
+<td>The author's own measure, <strong>not validated in the literature</strong>: 90th percentile of the LTAS in the Buzz band (5–8 kHz by default) minus the trendline evaluated at 5 kHz.</td>
+</tr>
+</tbody>
+</table>
+<p>Published reference values (Lã et al., 2023): reading aloud ≈ 4–5 dB; sung Fado-Canção ≈ 10 dB
+(3.7 to 14.3 dB across singers); two opera baritones 14.8 and 20 dB.</p>
+<p><strong>Important.</strong> FCP is an LTAS measure. The authors state it does not apply to sustained vowels.
+Use running singing, preferably with at least 10 s of voice.</p>
+<h2>2. Installing and running</h2>
+<ul>
+<li><strong>Executable (Windows):</strong> unzip <code>FCP_Live_Analyzer_2.0.0_win64.zip</code> and open
+  <code>FCP_Live_Analyzer\FCP_Live_Analyzer.exe</code>. Python is not required.</li>
+<li><strong>Source code:</strong> with Python 3.10 or newer, run <code>pip install -r requirements.txt</code>, then <code>python main.py</code>.
+  You can also open a file directly: <code>python main.py recording.wav</code>.</li>
+</ul>
+<p>Supported formats: WAV, FLAC, AIFF, OGG and MP3. Stereo files are averaged to mono.
+To measure up to 8 kHz, use a sample rate of 16 kHz or more (44.1 or 48 kHz recommended).</p>
+<h2>3. The main window</h2>
+<p><img alt="Main window with a file open" src="img/gui_file_en.png" /></p>
+<ol>
+<li><strong>Toolbar:</strong> Live/Stop, Open, Play/Pause, Batch, input (with level meter) and output devices, Calibrate,
+   Export, Screenshot, Settings, Manual and About.</li>
+<li><strong>LTAS tab:</strong> white curve = LTAS of the current window; grey curve = global LTAS (whole file or session);
+   dashed yellow line = 1–5 kHz trendline; coloured arrow = FCP; coloured band = 2–4 kHz;
+   grey dots = Lmax of each band; lilac band = Buzz band (when enabled).</li>
+<li><strong>Timeline:</strong> FCP of each window (blue), Buzz (lilac, when enabled), global FCP (dashed), signal envelope
+   (grey) and the red cursor. <strong>Click anywhere to jump there.</strong></li>
+<li><strong>Right panel:</strong> window FCP, global FCP, table of Lmax and ΔL (window and global), Leq, mean F0, analysed
+   voiced time, Buzz (when enabled) and <strong>warnings</strong> about the quality of the measure.</li>
+<li><strong>FCP × Buzz tab:</strong> scatter of all windows with the r coefficient. The red dot is the current window.</li>
+<li><strong>Table tab:</strong> every numeric value with its definition.</li>
+</ol>
+<p>The <strong>FCP colours</strong> (blue &lt; 5, green 5–10, orange 10–15, red ≥ 15 dB) are visual bands chosen from the values
+in the paper. <strong>They are not validated thresholds</strong> for the "presence" of a singer's formant.</p>
+<p>Shortcuts: <strong>Space</strong> play/pause, <strong>←/→</strong> back/forward 1 s, <strong>Home</strong> to the start, <strong>Ctrl+O</strong> open,
+<strong>Ctrl+L</strong> live, <strong>Ctrl+B</strong> batch, <strong>Ctrl+E</strong> export, <strong>F1</strong> manual. You can also drop a file onto the window.</p>
+<h2>4. Live mode</h2>
+<p><img alt="Live mode" src="img/gui_live_en.png" /></p>
+<ol>
+<li>Choose the microphone under <strong>Input</strong>. Check on the meter that the signal does not reach red (clipping).</li>
+<li>Click <strong>Live</strong>. LTAS and FCP update 10 times per second, about 0.2 s behind the input.</li>
+<li>The <strong>FCP (3 s window)</strong> card shows the last 3 s of voice. The <strong>Session global FCP</strong> card accumulates all
+   voice since the start. To compare singers or tasks, use the global value.</li>
+<li>Click <strong>Stop</strong>. The take is saved as <code>take.wav</code>, re-analysed with the same engine as file mode and exported to a
+   <code>Live_YYYYMMDD_HHMMSS</code> folder. The take stays open for synchronised review.</li>
+</ol>
+<p>Unvoiced parts (silence, voiceless consonants, breathing) are discarded automatically, as in the paper.</p>
+<h2>5. Files and synchronised playback</h2>
+<ol>
+<li>Click <strong>Open</strong> (or drop the file). Analysis runs in the background with a progress bar.</li>
+<li>The global FCP of the file appears in the panel. The timeline shows the FCP of every 3 s window.</li>
+<li>Click <strong>Play</strong>. LTAS, cards and cursor follow exactly what you hear: the position comes from the audio stream
+   itself, minus the sound card latency. The window shown is the last 3 s heard.</li>
+<li>While stopped, click the timeline to inspect any moment.</li>
+<li><strong>Freeze</strong> holds the plot while the audio keeps playing.</li>
+</ol>
+<h2>6. Batch analysis</h2>
+<p>Click <strong>Batch</strong> and select several files. The program creates a <code>Batch_YYYYMMDD_HHMMSS</code> folder with:</p>
+<ul>
+<li><code>batch_summary.csv</code>: one row per file with the global values;</li>
+<li><code>batch_windows.csv</code>: every window of every file;</li>
+<li>one sub-folder per file with <code>summary.csv</code>, <code>windows.csv</code>, <code>ltas_global.csv</code> and the plots
+  <code>ltas_global.png</code>, <code>fcp_timeline.png</code> and <code>fcp_vs_buzz.png</code>.</li>
+</ul>
+<p>A file that fails does not stop the batch: its row shows <code>ERROR</code> in the <code>warnings</code> column.</p>
+<h2>7. Calibration in dB SPL</h2>
+<p>FCP and ΔL are level differences and <strong>do not depend on calibration</strong>. Calibrate only if you want LTAS and Leq in
+dB SPL, as in the paper:</p>
+<ol>
+<li>Place the microphone and set the gain. Do not change the gain afterwards.</li>
+<li>Play a steady tone (e.g. 1 kHz) near the microphone and measure its level with a sound level meter (Z or C weighting).</li>
+<li>In <strong>Calibrate</strong>, enter the reading and click <strong>Record 3 s from the microphone</strong> (or use a WAV of the tone).
+   The program computes the offset (dB SPL = 10·log10(power) + offset). You can also type the offset.</li>
+<li>Enter the <strong>mouth–microphone distance</strong>. Levels are normalised to 30 cm with 20·log10(d/30).</li>
+</ol>
+<p>The calibration is saved and only valid for the same microphone and gain. The program warns if you change the input.
+Without calibration, levels are shown as "dB (rel. full scale)".</p>
+<h2>8. Settings</h2>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LTAS engine</td>
+<td>Sopran-like</td>
+<td>Hann window with 350 Hz bandwidth and power average; continuous curve (points every ~20 Hz).</td>
+</tr>
+<tr>
+<td></td>
+<td>Praat-like</td>
+<td>40 ms frames, power average, then mean density in 350 Hz bands, like Praat's <code>To Ltas</code> (validated against Praat).</td>
+</tr>
+<tr>
+<td>Bandwidth</td>
+<td>350 Hz</td>
+<td>Value used in the paper.</td>
+</tr>
+<tr>
+<td>Bandwidth definition</td>
+<td>−6 dB</td>
+<td>Hann window of 2·fs/B samples (5.714 ms at 350 Hz), exactly the window Sopran reports. Alternatives: −3 dB and ENBW.</td>
+</tr>
+<tr>
+<td>Points used for the measures</td>
+<td>Sopran grid</td>
+<td>FCP, trendline and Lmax are computed on the same frequency points as Sopran (256-point FFT at 44.1 kHz, ~172 Hz), which reproduces Sopran's numbers. The "fine grid" (~20 Hz) locates the maximum more precisely but can read a few tenths of a dB higher. The plotted curve is always the fine one.</td>
+</tr>
+<tr>
+<td>Dynamic FCP window</td>
+<td>3 s</td>
+<td>Affects only the curve over time; the global value uses the whole file.</td>
+</tr>
+<tr>
+<td>Voiced segments only</td>
+<td>yes</td>
+<td>Praat pitch detector (60–1200 Hz).</td>
+</tr>
+<tr>
+<td>Buzz band</td>
+<td>5–8 kHz</td>
+<td>Also 4–8 and 5–9 kHz.</td>
+</tr>
+<tr>
+<td>Language</td>
+<td>English</td>
+<td>Changes when the program is reopened.</td>
+</tr>
+<tr>
+<td>Exports folder</td>
+<td>Documents\FCP Live Analyzer\Exports</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2>9. Exported files</h2>
+<p><code>summary.csv</code> and <code>batch_summary.csv</code> (one row per file):</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>duration_s</code>, <code>voiced_s</code></td>
+<td>Total duration and voiced time used in the LTAS</td>
+</tr>
+<tr>
+<td><code>level_unit</code></td>
+<td>Unit of the levels (dB SPL, dB SPL @30 cm or relative)</td>
+</tr>
+<tr>
+<td><code>Leq_C_voiced_dB</code>, <code>Leq_C_all_dB</code></td>
+<td>C-weighted Leq of the voice and of the whole file</td>
+</tr>
+<tr>
+<td><code>F0_mean_Hz</code>, <code>pitch_range_st</code></td>
+<td>Mean F0 (geometric) and F0 range (10th–90th percentile, semitones)</td>
+</tr>
+<tr>
+<td><code>FCP_dB</code>, <code>FCP_freq_Hz</code></td>
+<td>FCP and the frequency of the maximum</td>
+</tr>
+<tr>
+<td><code>Peak_2_4_dB</code>, <code>Peak_2_4_freq_Hz</code></td>
+<td>LTAS peak in 2–4 kHz</td>
+</tr>
+<tr>
+<td><code>FCP_at_peak_v1_dB</code></td>
+<td>Old definition (peak minus trend at the peak), only for comparison with v1.x</td>
+</tr>
+<tr>
+<td><code>Trend_slope_dB_per_oct</code>, <code>Trend_intercept_dB</code></td>
+<td>Trendline: level = slope·log2(f) + intercept</td>
+</tr>
+<tr>
+<td><code>Lmax_0_2_dB</code>, <code>Lmax_2_5_dB</code>, <code>Lmax_5_8_dB</code></td>
+<td>Band maxima</td>
+</tr>
+<tr>
+<td><code>dL1_dB</code> … <code>dL4_dB</code></td>
+<td>ΔL1–ΔL4 with the paper's signs</td>
+</tr>
+<tr>
+<td><code>Buzz_experimental_dB</code>, <code>Buzz_experimental_freq_Hz</code></td>
+<td>Buzz (experimental)</td>
+</tr>
+<tr>
+<td><code>windows_n</code>, <code>windows_FCP_mean_dB</code>, <code>windows_FCP_sd_dB</code>, <code>windows_r_FCP_Buzz</code></td>
+<td>Window statistics</td>
+</tr>
+<tr>
+<td><code>warnings</code>, <code>settings</code></td>
+<td>Warnings and every setting used (JSON), so the analysis can be reproduced</td>
+</tr>
+</tbody>
+</table>
+<p><code>windows.csv</code> holds the same measures per window (<code>t_start_s</code>, <code>t_end_s</code>). <code>ltas_global.csv</code> lists the LTAS point by
+point together with the trendline, ready for Excel or for comparison with Sopran.</p>
+<h2>10. Warnings and limits</h2>
+<table>
+<thead>
+<tr>
+<th>Warning</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Short LTAS</td>
+<td>Less than 10 s of voice. FCP becomes sensitive to the vowels and notes of the excerpt.</td>
+</tr>
+<tr>
+<td>Sustained vowel/note</td>
+<td>F0 hardly varies (less than 2 semitones). The paper states FCP does not apply to sustained vowels.</td>
+</tr>
+<tr>
+<td>High mean F0</td>
+<td>Above 350 Hz the harmonics are wider apart than the analysis bandwidth; the LTAS shows single harmonics (common in sopranos).</td>
+</tr>
+<tr>
+<td>Clipping</td>
+<td>More than 0.1 % of samples saturated; high frequencies are distorted. Lower the gain.</td>
+</tr>
+<tr>
+<td>Low sample rate</td>
+<td>Below 16 kHz the 5–8 kHz band is missing (Lmax(5–8), ΔL2–ΔL4 and Buzz are empty).</td>
+</tr>
+<tr>
+<td>Not calibrated</td>
+<td>Levels are relative; FCP and ΔL remain valid.</td>
+</tr>
+</tbody>
+</table>
+<p>Also: keep microphone distance and position constant, avoid background noise and reverberation, compare similar
+tasks (FCP also varies with loudness and with ΔL1) and do not interpret 1–2 dB differences between days without
+repeated measurements.</p>
+<h2>11. Validation</h2>
+<p>The <code>tests</code> folder holds automatic tests (run <code>python -m pytest tests</code>). Among them:</p>
+<ul>
+<li>synthetic signals with a known envelope: measured FCP matches the FCP of the theoretical LTAS (±0.5 dB) in both engines;</li>
+<li>invariance: gain and any tilt linear in log(f) do not change FCP;</li>
+<li>FCP is the maximum of LTAS − trendline, not the LTAS peak;</li>
+<li>the ΔL1–ΔL4 definitions reproduce Tables 2, 3 and 4 of the paper;</li>
+<li>the Praat-like engine matches Praat's own <code>To Ltas</code>;</li>
+<li>unvoiced parts are excluded; live mode gives the same result as file mode;</li>
+<li>calibration, 30 cm normalisation and C weighting;</li>
+<li>sample rates from 16 to 48 kHz give the same FCP.</li>
+</ul>
+<p><strong>Comparison with Sopran</strong> (the program used by Lã et al.). Whole-file LTAS in Sopran (Hanning, 350 Hz,
+5.7143 ms window) and Sopran's own FCP report, compared with the app without unvoiced removal (as done in Sopran):</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Sopran FCP</th>
+<th>App FCP</th>
+<th>Sopran slope</th>
+<th>App slope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>noise with a 3 kHz cluster</td>
+<td>10.15 dB</td>
+<td>10.16 dB</td>
+<td>−11.488 dB/oct</td>
+<td>−11.485 dB/oct</td>
+</tr>
+<tr>
+<td>noise without cluster</td>
+<td>0.04 dB</td>
+<td>0.06 dB</td>
+<td>−12.100</td>
+<td>−12.100</td>
+</tr>
+<tr>
+<td>tenor (example)</td>
+<td>18.47 dB</td>
+<td>18.49 dB</td>
+<td>−22.449</td>
+<td>−22.458</td>
+</tr>
+<tr>
+<td>rock (example)</td>
+<td>2.93 dB</td>
+<td>2.95 dB</td>
+<td>−9.206</td>
+<td>−9.207</td>
+</tr>
+</tbody>
+</table>
+<p>The LTAS shape matches point by point (difference below 0.6 dB from 0.3 to 8 kHz). Two convention differences,
+which affect neither FCP nor ΔL: (1) Sopran shows levels 6.02 dB below the app's (the app uses band level: a
+−20 dBFS RMS sine reads −20 dB); (2) Sopran labels frequencies k·fs/255 instead of k·fs/256, so its FCP frequency
+reads 0.4 % higher (3112.9 Hz instead of 3100.8 Hz). Data and script are in <code>validation/sopran</code> and
+<code>tools/compare_sopran.py</code>; the test <code>tests/test_sopran.py</code> checks this agreement in every version.</p>
+<h2>12. Changes from version 1.2.1</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>v1.2.1</th>
+<th>v2.0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FCP definition</td>
+<td>LTAS peak in 2–4 kHz minus the trendline at that peak</td>
+<td>Maximum of (LTAS − trendline) in 2–4 kHz, as in the paper</td>
+</tr>
+<tr>
+<td>LTAS</td>
+<td>Mean of dB spectra, maximum inside 350 Hz bins</td>
+<td>Power average with a 350 Hz Hann window (or Praat-like bands)</td>
+</tr>
+<tr>
+<td>ΔL in CSV</td>
+<td>Inverted signs; no ΔL3; "Delta_2_4" was just Lmax(2–4)</td>
+<td>ΔL1–ΔL4 with the paper's signs</td>
+</tr>
+<tr>
+<td>Level axis</td>
+<td>Fixed +94 dB offset without real calibration</td>
+<td>Reference-tone calibration, dB SPL at 30 cm, or relative dB</td>
+</tr>
+<tr>
+<td>Live</td>
+<td>Recomputed everything every update; after 20 s recomputed the whole signal</td>
+<td>Incremental accumulation (~4 ms per update); session global in real time</td>
+</tr>
+<tr>
+<td>Playback</td>
+<td>Display driven by a timer, unrelated to the real audio position</td>
+<td>Display driven by the audio stream position minus latency</td>
+</tr>
+<tr>
+<td>Buzz</td>
+<td>Several variants, ad hoc normalisation</td>
+<td>One definition, labelled experimental, off by default</td>
+</tr>
+<tr>
+<td>Sustained vowels</td>
+<td>Example with a sustained vowel</td>
+<td>Automatic warning</td>
+</tr>
+<tr>
+<td>Interface</td>
+<td>Tkinter + Matplotlib</td>
+<td>PySide6 + pyqtgraph, Portuguese and English</td>
+</tr>
+<tr>
+<td>License</td>
+<td>Conflicting MIT and EULA</td>
+<td>Apache 2.0 with NOTICE (credit to the author required)</td>
+</tr>
+<tr>
+<td>Dependency</td>
+<td><code>parselmouth</code> (wrong package)</td>
+<td><code>praat-parselmouth</code></td>
+</tr>
+</tbody>
+</table>
+<p>To compare old and new results on the same files: <code>python tools/compare_v1.py file.wav</code>.</p>
+<h2>13. References and license</h2>
+<ul>
+<li>Lã FMB, Silva LS, Granqvist S. Long-term average spectrum characteristics of Portuguese Fado-Canção from
+  Coimbra. <em>Journal of Voice</em> 37(4):631.e7–631.e15, 2023.</li>
+<li>Sundberg J. Level and center frequency of the singer's formant. <em>Journal of Voice</em> 15(2):176–186, 2001.</li>
+<li>Sundberg J. The singer's formant revisited. STL-QPSR 36(2–3):83–96, 1995.</li>
+<li>Boersma P, Weenink D. Praat; Jadoul Y, Thompson B, de Boer B. Introducing Parselmouth. <em>J Phonetics</em> 71:1–15, 2018.</li>
+</ul>
+<p>Apache License 2.0: free use, modification and redistribution, as long as the NOTICE file and the credit to the
+author are kept. To cite the program, see <code>CITATION.cff</code>. Contact: fonotechacademy@gmail.com.</p></body></html>

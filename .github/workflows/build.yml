@@ -1,0 +1,50 @@
+# Builds FCP Live Analyzer for macOS (Apple Silicon and Intel) and Windows on GitHub's servers.
+# Run it from the repository's "Actions" tab ("Run workflow") or by pushing a tag v2.*.
+# The DMG / Setup files appear as downloadable artifacts of the run.
+name: build
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v2.*"]
+
+jobs:
+  macos:
+    strategy:
+      matrix:
+        os: [macos-14, macos-13]   # arm64 (Apple Silicon), x86_64 (Intel)
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Build app and DMG
+        run: |
+          chmod +x build_macos.sh
+          ./build_macos.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FCP_Live_Analyzer_macOS_${{ matrix.os }}
+          path: dist/*.dmg
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Build exe and installer
+        shell: pwsh
+        run: |
+          python -m pip install -r requirements.txt pyinstaller pytest markdown pymupdf
+          python -m pytest tests -q
+          python tools/build_manuals.py
+          python -m PyInstaller --noconfirm --clean fcp_live_analyzer.spec
+          choco install nsis -y
+          & "C:\Program Files (x86)\NSIS\makensis.exe" installer\fcp_live_analyzer.nsi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FCP_Live_Analyzer_Windows
+          path: dist/*_Setup.exe
