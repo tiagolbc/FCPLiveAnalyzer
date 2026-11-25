@@ -1,0 +1,447 @@
+<html><head><meta charset='utf-8'><title>Manual_FCP_Live_Analyzer_pt-BR</title><style>
+body { font-family: sans-serif; font-size: 10pt; line-height: 1.4; color: #111; }
+h1 { font-size: 20pt; color: #1d4ed8; margin-bottom: 4pt; }
+h2 { font-size: 14pt; color: #1d4ed8; margin-top: 14pt; border-bottom: 1px solid #cbd5e1; }
+table { border-collapse: collapse; width: 100%; margin: 6pt 0; }
+th, td { border: 1px solid #cbd5e1; padding: 3pt 5pt; font-size: 8.5pt; vertical-align: top; }
+th { background: #e2e8f0; }
+code { font-family: monospace; font-size: 8.5pt; background: #f1f5f9; }
+img { width: 100%; }
+body { max-width: 900px; margin: 30px auto; padding: 0 20px; }</style></head><body><h1>FCP Live Analyzer 2.0 — Manual do usuário</h1>
+<p>Tiago Lima Bicalho Cruz · versão 2.0.0 · novembro de 2026</p>
+<p>O FCP Live Analyzer mede, ao vivo ou em arquivos, a <strong>Formant Cluster Prominence (FCP)</strong>: quanto o
+agrupamento das ressonâncias R3–R5 (o "formante do cantor") se destaca no espectro médio de longo termo
+(LTAS) da voz. O programa segue a definição de Lã, Silva e Granqvist (2023) e mostra também as medidas
+de banda do mesmo artigo (Lmax e ΔL1–ΔL4).</p>
+<h2>1. O que o programa mede</h2>
+<p><img alt="LTAS global de um tenor com a reta de tendência e o FCP" src="img/fcp_definition_pt.png" /></p>
+<table>
+<thead>
+<tr>
+<th>Medida</th>
+<th>Definição (Lã et al., 2023)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LTAS</td>
+<td>Espectro médio de longo termo, só dos trechos vozeados. Janela Hanning, largura de banda de 350 Hz, média em potência.</td>
+</tr>
+<tr>
+<td>Reta de tendência</td>
+<td>Reta ajustada ao LTAS entre 1 e 5 kHz, linear em log da frequência (é reta no eixo logarítmico, como nas figuras do artigo).</td>
+</tr>
+<tr>
+<td><strong>FCP</strong></td>
+<td><strong>Maior diferença entre o LTAS e a reta, dentro de 2–4 kHz.</strong> A frequência onde ela ocorre também é informada.</td>
+</tr>
+<tr>
+<td>Lmax(0–2), Lmax(2–5), Lmax(5–8)</td>
+<td>Nível máximo do LTAS em cada banda (kHz).</td>
+</tr>
+<tr>
+<td>ΔL1</td>
+<td>Lmax(0–2) − Lmax(2–5) (índice de Hammarberg)</td>
+</tr>
+<tr>
+<td>ΔL2</td>
+<td>Lmax(2–5) − Lmax(5–8)</td>
+</tr>
+<tr>
+<td>ΔL3</td>
+<td>ΔL1 − ΔL2</td>
+</tr>
+<tr>
+<td>ΔL4</td>
+<td>Lmax(0–2) − Lmax(5–8)</td>
+</tr>
+<tr>
+<td>Leq (C)</td>
+<td>Nível equivalente com ponderação C, só da voz. Em dB SPL se o sistema estiver calibrado.</td>
+</tr>
+<tr>
+<td>Buzz (experimental)</td>
+<td>Medida própria do autor, <strong>não validada na literatura</strong>: percentil 90 do LTAS na faixa do Buzz (5–8 kHz por padrão) menos a reta de tendência avaliada em 5 kHz.</td>
+</tr>
+</tbody>
+</table>
+<p>Valores de referência publicados (Lã et al., 2023): leitura em voz alta ≈ 4–5 dB; Fado-Canção cantado ≈ 10 dB
+(de 3,7 a 14,3 dB entre cantores); dois barítonos líricos 14,8 e 20 dB.</p>
+<p><strong>Importante.</strong> O FCP é uma medida de LTAS. Os autores afirmam que ele não se aplica a vogais sustentadas.
+Use trechos de canto corrido, de preferência com pelo menos 10 s de voz.</p>
+<h2>2. Instalação e execução</h2>
+<ul>
+<li><strong>Executável (Windows):</strong> descompacte <code>FCP_Live_Analyzer_2.0.0_win64.zip</code> e abra
+  <code>FCP_Live_Analyzer\FCP_Live_Analyzer.exe</code>. Não precisa instalar o Python.</li>
+<li><strong>Código-fonte:</strong> com Python 3.10 ou mais novo, rode <code>pip install -r requirements.txt</code> e depois <code>python main.py</code>.
+  Também dá para abrir um arquivo direto: <code>python main.py gravacao.wav</code>.</li>
+</ul>
+<p>Formatos aceitos: WAV, FLAC, AIFF, OGG e MP3. Arquivos estéreo são convertidos em mono pela média dos canais.
+Para medir até 8 kHz, use taxa de amostragem de 16 kHz ou mais (44,1 ou 48 kHz recomendados).</p>
+<h2>3. A tela principal</h2>
+<p><img alt="Tela principal com um arquivo aberto" src="img/gui_file_pt.png" /></p>
+<ol>
+<li><strong>Barra de ferramentas:</strong> Ao vivo/Parar, Abrir, Tocar/Pausar, Lote, escolha de entrada (com medidor de
+   nível) e saída de áudio, Calibrar, Exportar, Captura, Configurações, Manual e Sobre.</li>
+<li><strong>Aba LTAS:</strong> curva branca = LTAS da janela atual; curva cinza = LTAS global (do arquivo inteiro ou da sessão);
+   linha amarela tracejada = reta de tendência de 1–5 kHz; seta colorida = FCP; faixa colorida = 2–4 kHz;
+   pontos cinza = Lmax de cada banda; faixa lilás = banda do Buzz (se ativada).</li>
+<li><strong>Linha do tempo:</strong> FCP de cada janela (azul), Buzz (lilás, se ativado), FCP global (tracejado), envelope do
+   sinal (cinza) e o cursor vermelho. <strong>Clique em qualquer ponto para ir até ele.</strong></li>
+<li><strong>Painel à direita:</strong> FCP da janela, FCP global, tabela de Lmax e ΔL (janela e global), Leq, F0 médio,
+   tempo de voz analisado, Buzz (se ativado) e <strong>avisos</strong> sobre a qualidade da medida.</li>
+<li><strong>Aba FCP × Buzz:</strong> dispersão das janelas, com o coeficiente r. O ponto vermelho é a janela atual.</li>
+<li><strong>Aba Tabela:</strong> todos os valores numéricos, com a definição de cada um.</li>
+</ol>
+<p>As <strong>cores do FCP</strong> (azul &lt; 5, verde 5–10, laranja 10–15, vermelho ≥ 15 dB) são faixas visuais escolhidas a partir
+dos valores do artigo. <strong>Não são limiares validados</strong> de "presença" do formante do cantor.</p>
+<p>Atalhos: <strong>Espaço</strong> toca/pausa, <strong>←/→</strong> volta/avança 1 s, <strong>Home</strong> volta ao início, <strong>Ctrl+O</strong> abre,
+<strong>Ctrl+L</strong> ao vivo, <strong>Ctrl+B</strong> lote, <strong>Ctrl+E</strong> exporta, <strong>F1</strong> manual. Também dá para arrastar um arquivo para a janela.</p>
+<h2>4. Modo ao vivo</h2>
+<p><img alt="Modo ao vivo" src="img/gui_live_pt.png" /></p>
+<ol>
+<li>Escolha o microfone em <strong>Entrada</strong>. Confira no medidor que o sinal não chega ao vermelho (clipping).</li>
+<li>Clique em <strong>Ao vivo</strong>. O LTAS e o FCP são atualizados 10 vezes por segundo, com cerca de 0,2 s de atraso.</li>
+<li>O cartão <strong>FCP (janela de 3 s)</strong> mostra os últimos 3 s de voz. O cartão <strong>FCP global da sessão</strong> acumula
+   toda a voz desde o início. Para comparar cantores ou tarefas, use o valor global.</li>
+<li>Clique em <strong>Parar</strong>. A gravação é salva em <code>take.wav</code>, analisada de novo com o mesmo motor do modo arquivo
+   e exportada para uma pasta <code>Live_AAAAMMDD_HHMMSS</code>. A gravação fica aberta para revisão sincronizada.</li>
+</ol>
+<p>Os trechos sem voz (silêncio, consoantes surdas, respiração) são descartados automaticamente, como no artigo.</p>
+<h2>5. Arquivos e reprodução sincronizada</h2>
+<ol>
+<li>Clique em <strong>Abrir</strong> (ou arraste o arquivo). A análise roda em segundo plano, com barra de progresso.</li>
+<li>O FCP global do arquivo aparece no painel. A linha do tempo mostra o FCP de cada janela de 3 s.</li>
+<li>Clique em <strong>Tocar</strong>. O LTAS, os cartões e o cursor acompanham exatamente o que se ouve: a posição vem do
+   próprio fluxo de áudio, já descontada a latência da placa de som. A janela mostrada é a dos últimos 3 s ouvidos.</li>
+<li>Com o áudio parado, clique na linha do tempo para inspecionar qualquer momento.</li>
+<li><strong>Congelar</strong> mantém o gráfico parado enquanto o áudio continua.</li>
+</ol>
+<h2>6. Análise em lote</h2>
+<p>Clique em <strong>Lote</strong> e selecione vários arquivos. O programa cria uma pasta <code>Batch_AAAAMMDD_HHMMSS</code> com:</p>
+<ul>
+<li><code>batch_summary.csv</code>: uma linha por arquivo, com os valores globais;</li>
+<li><code>batch_windows.csv</code>: todas as janelas de todos os arquivos;</li>
+<li>uma subpasta por arquivo, com <code>summary.csv</code>, <code>windows.csv</code>, <code>ltas_global.csv</code> e os gráficos
+  <code>ltas_global.png</code>, <code>fcp_timeline.png</code> e <code>fcp_vs_buzz.png</code>.</li>
+</ul>
+<p>Um arquivo com erro não interrompe o lote: a linha dele traz <code>ERROR</code> na coluna <code>warnings</code>.</p>
+<h2>7. Calibração em dB SPL</h2>
+<p>O FCP e os ΔL são diferenças de nível e <strong>não dependem de calibração</strong>. Calibre apenas se quiser LTAS e Leq em dB SPL,
+como no artigo:</p>
+<ol>
+<li>Posicione o microfone e ajuste o ganho. Não mude o ganho depois.</li>
+<li>Toque um tom estável (por exemplo 1 kHz) perto do microfone e meça o nível com um decibelímetro (ponderação Z ou C).</li>
+<li>Em <strong>Calibrar</strong>, informe o valor lido e clique em <strong>Gravar 3 s do microfone</strong> (ou use um WAV do tom).
+   O programa calcula o offset (dB SPL = 10·log10(potência) + offset). Também é possível digitar o offset.</li>
+<li>Informe a <strong>distância boca–microfone</strong>. Os níveis são normalizados para 30 cm com 20·log10(d/30).</li>
+</ol>
+<p>A calibração fica salva e vale só para o mesmo microfone e ganho. O programa avisa se você trocar de entrada.
+Sem calibração, os níveis aparecem como "dB (rel. full scale)".</p>
+<h2>8. Configurações</h2>
+<table>
+<thead>
+<tr>
+<th>Opção</th>
+<th>Padrão</th>
+<th>Comentário</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Motor do LTAS</td>
+<td>Tipo Sopran</td>
+<td>Hann com largura de banda de 350 Hz e média em potência; curva contínua (pontos a cada ~20 Hz).</td>
+</tr>
+<tr>
+<td></td>
+<td>Tipo Praat</td>
+<td>Quadros de 40 ms, média em potência e média da densidade em faixas de 350 Hz, como o <code>To Ltas</code> do Praat (validado contra o Praat).</td>
+</tr>
+<tr>
+<td>Largura de banda</td>
+<td>350 Hz</td>
+<td>Valor do artigo.</td>
+</tr>
+<tr>
+<td>Definição da banda</td>
+<td>−6 dB</td>
+<td>Janela Hann de 2·fs/B amostras (5,714 ms a 350 Hz), exatamente a janela que o Sopran mostra. Alternativas: −3 dB e ENBW.</td>
+</tr>
+<tr>
+<td>Pontos usados nas medidas</td>
+<td>Grade do Sopran</td>
+<td>O FCP, a reta e os Lmax são calculados nos mesmos pontos de frequência do Sopran (FFT de 256 pontos a 44,1 kHz, ~172 Hz), o que reproduz os números do Sopran. A "grade fina" (~20 Hz) acha o máximo com mais precisão, mas pode dar alguns décimos de dB a mais. A curva desenhada é sempre a fina.</td>
+</tr>
+<tr>
+<td>Janela do FCP dinâmico</td>
+<td>3 s</td>
+<td>Só afeta a curva no tempo; o valor global usa o arquivo inteiro.</td>
+</tr>
+<tr>
+<td>Só trechos vozeados</td>
+<td>sim</td>
+<td>Detector de F0 do Praat (60–1200 Hz).</td>
+</tr>
+<tr>
+<td>Faixa do Buzz</td>
+<td>5–8 kHz</td>
+<td>Também 4–8 e 5–9 kHz.</td>
+</tr>
+<tr>
+<td>Idioma</td>
+<td>inglês</td>
+<td>Muda ao reabrir o programa.</td>
+</tr>
+<tr>
+<td>Pasta de exportação</td>
+<td>Documentos\FCP Live Analyzer\Exports</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2>9. Arquivos exportados</h2>
+<p><code>summary.csv</code> e <code>batch_summary.csv</code> (uma linha por arquivo):</p>
+<table>
+<thead>
+<tr>
+<th>Coluna</th>
+<th>Conteúdo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>duration_s</code>, <code>voiced_s</code></td>
+<td>Duração total e tempo de voz usado no LTAS</td>
+</tr>
+<tr>
+<td><code>level_unit</code></td>
+<td>Unidade dos níveis (dB SPL, dB SPL @30 cm ou relativo)</td>
+</tr>
+<tr>
+<td><code>Leq_C_voiced_dB</code>, <code>Leq_C_all_dB</code></td>
+<td>Leq com ponderação C da voz e do arquivo inteiro</td>
+</tr>
+<tr>
+<td><code>F0_mean_Hz</code>, <code>pitch_range_st</code></td>
+<td>F0 médio (geométrico) e faixa de F0 (percentis 10–90, semitons)</td>
+</tr>
+<tr>
+<td><code>FCP_dB</code>, <code>FCP_freq_Hz</code></td>
+<td>FCP e a frequência do máximo</td>
+</tr>
+<tr>
+<td><code>Peak_2_4_dB</code>, <code>Peak_2_4_freq_Hz</code></td>
+<td>Pico do LTAS em 2–4 kHz</td>
+</tr>
+<tr>
+<td><code>FCP_at_peak_v1_dB</code></td>
+<td>Definição antiga (pico menos reta no pico), só para comparação com a v1.x</td>
+</tr>
+<tr>
+<td><code>Trend_slope_dB_per_oct</code>, <code>Trend_intercept_dB</code></td>
+<td>Reta: nível = slope·log2(f) + intercept</td>
+</tr>
+<tr>
+<td><code>Lmax_0_2_dB</code>, <code>Lmax_2_5_dB</code>, <code>Lmax_5_8_dB</code></td>
+<td>Máximos por banda</td>
+</tr>
+<tr>
+<td><code>dL1_dB</code> … <code>dL4_dB</code></td>
+<td>ΔL1–ΔL4, com os sinais do artigo</td>
+</tr>
+<tr>
+<td><code>Buzz_experimental_dB</code>, <code>Buzz_experimental_freq_Hz</code></td>
+<td>Buzz (experimental)</td>
+</tr>
+<tr>
+<td><code>windows_n</code>, <code>windows_FCP_mean_dB</code>, <code>windows_FCP_sd_dB</code>, <code>windows_r_FCP_Buzz</code></td>
+<td>Estatísticas das janelas</td>
+</tr>
+<tr>
+<td><code>warnings</code>, <code>settings</code></td>
+<td>Avisos e todas as configurações usadas (JSON), para a análise ser reproduzível</td>
+</tr>
+</tbody>
+</table>
+<p><code>windows.csv</code> tem as mesmas medidas por janela (<code>t_start_s</code>, <code>t_end_s</code>). <code>ltas_global.csv</code> traz o LTAS ponto
+a ponto e a reta, prontos para abrir no Excel ou comparar com o Sopran. Os CSV usam vírgula como separador e
+ponto decimal (no Excel em português, use Dados &gt; De Texto/CSV).</p>
+<h2>10. Avisos e limites</h2>
+<table>
+<thead>
+<tr>
+<th>Aviso</th>
+<th>O que significa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LTAS curto</td>
+<td>Menos de 10 s de voz. O FCP fica sensível às vogais e notas do trecho.</td>
+</tr>
+<tr>
+<td>Vogal/nota sustentada</td>
+<td>A F0 quase não varia (menos de 2 semitons). O artigo diz que o FCP não se aplica a vogais sustentadas.</td>
+</tr>
+<tr>
+<td>F0 médio alto</td>
+<td>Acima de 350 Hz os harmônicos ficam mais espaçados que a banda de análise; o LTAS mostra harmônicos isolados (comum em sopranos).</td>
+</tr>
+<tr>
+<td>Clipping</td>
+<td>Mais de 0,1 % das amostras saturadas; os agudos ficam distorcidos. Reduza o ganho.</td>
+</tr>
+<tr>
+<td>Taxa de amostragem baixa</td>
+<td>Abaixo de 16 kHz, a banda de 5–8 kHz some (Lmax(5–8), ΔL2–ΔL4 e Buzz ficam vazios).</td>
+</tr>
+<tr>
+<td>Sem calibração</td>
+<td>Os níveis são relativos; FCP e ΔL continuam válidos.</td>
+</tr>
+</tbody>
+</table>
+<p>Outros cuidados: mantenha a distância e a posição do microfone, evite ruído de fundo e reverberação, compare
+tarefas parecidas (o FCP também varia com a intensidade e com o ΔL1) e não interprete diferenças de 1–2 dB
+entre dias sem repetir as medidas.</p>
+<h2>11. Validação</h2>
+<p>A pasta <code>tests</code> tem testes automáticos (rode <code>python -m pytest tests</code>). Entre eles:</p>
+<ul>
+<li>sinais sintéticos com envelope conhecido: o FCP medido bate com o FCP do LTAS teórico (±0,5 dB) nos dois motores;</li>
+<li>invariância: ganho e qualquer inclinação linear em log(f) não alteram o FCP;</li>
+<li>o FCP é o máximo de LTAS − reta, não o pico do LTAS;</li>
+<li>as definições de ΔL1–ΔL4 reproduzem as Tabelas 2, 3 e 4 do artigo;</li>
+<li>o motor tipo Praat coincide com o <code>To Ltas</code> do próprio Praat;</li>
+<li>trechos sem voz são excluídos; o modo ao vivo dá o mesmo resultado do modo arquivo;</li>
+<li>calibração, normalização para 30 cm e ponderação C;</li>
+<li>taxas de 16 a 48 kHz dão o mesmo FCP.</li>
+</ul>
+<p><strong>Comparação com o Sopran</strong> (o programa usado por Lã et al.). LTAS do arquivo inteiro no Sopran (Hanning,
+350 Hz, janela de 5,7143 ms) e relatório de FCP do próprio Sopran, comparados com o app sem a remoção de trechos
+não vozeados (como foi feito no Sopran):</p>
+<table>
+<thead>
+<tr>
+<th>Arquivo</th>
+<th>FCP Sopran</th>
+<th>FCP app</th>
+<th>Inclinação Sopran</th>
+<th>Inclinação app</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ruído com cluster em 3 kHz</td>
+<td>10,15 dB</td>
+<td>10,16 dB</td>
+<td>−11,488 dB/oit</td>
+<td>−11,485 dB/oit</td>
+</tr>
+<tr>
+<td>ruído sem cluster</td>
+<td>0,04 dB</td>
+<td>0,06 dB</td>
+<td>−12,100</td>
+<td>−12,100</td>
+</tr>
+<tr>
+<td>tenor (exemplo)</td>
+<td>18,47 dB</td>
+<td>18,49 dB</td>
+<td>−22,449</td>
+<td>−22,458</td>
+</tr>
+<tr>
+<td>rock (exemplo)</td>
+<td>2,93 dB</td>
+<td>2,95 dB</td>
+<td>−9,206</td>
+<td>−9,207</td>
+</tr>
+</tbody>
+</table>
+<p>A forma do LTAS coincide ponto a ponto (diferença menor que 0,6 dB de 0,3 a 8 kHz). Duas diferenças de
+convenção, que não afetam FCP nem ΔL: (1) o Sopran mostra níveis 6,02 dB abaixo dos do app (o app usa o nível
+de banda: um seno de −20 dBFS RMS lê −20 dB); (2) o Sopran rotula as frequências como k·fs/255 em vez de
+k·fs/256, então a frequência do FCP aparece 0,4 % mais alta no Sopran (3112,9 Hz em vez de 3100,8 Hz).
+Os dados e o script estão em <code>validation/sopran</code> e <code>tools/compare_sopran.py</code>; o teste <code>tests/test_sopran.py</code>
+verifica essa concordância a cada versão.</p>
+<h2>12. O que mudou em relação à versão 1.2.1</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>v1.2.1</th>
+<th>v2.0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Definição do FCP</td>
+<td>Pico do LTAS em 2–4 kHz menos a reta nesse pico</td>
+<td>Máximo de (LTAS − reta) em 2–4 kHz, como no artigo</td>
+</tr>
+<tr>
+<td>LTAS</td>
+<td>Média dos espectros em dB, máximo em faixas de 350 Hz</td>
+<td>Média em potência com janela Hann de 350 Hz (ou faixas tipo Praat)</td>
+</tr>
+<tr>
+<td>ΔL nos CSV</td>
+<td>Sinais invertidos; sem ΔL3; "Delta_2_4" era só Lmax(2–4)</td>
+<td>ΔL1–ΔL4 com os sinais do artigo</td>
+</tr>
+<tr>
+<td>Eixo de nível</td>
+<td>Offset fixo de +94 dB, sem calibração real</td>
+<td>Calibração com tom de referência, dB SPL a 30 cm, ou dB relativo</td>
+</tr>
+<tr>
+<td>Ao vivo</td>
+<td>Recalculava tudo a cada atualização; após 20 s, recalculava o sinal inteiro</td>
+<td>Acúmulo incremental (~4 ms por atualização); global da sessão em tempo real</td>
+</tr>
+<tr>
+<td>Reprodução</td>
+<td>Exibição por temporizador, sem relação com a posição real do áudio</td>
+<td>Exibição guiada pela posição do fluxo de áudio, menos a latência</td>
+</tr>
+<tr>
+<td>Buzz</td>
+<td>Várias versões, normalização ad hoc</td>
+<td>Uma definição, rotulada como experimental, desligada por padrão</td>
+</tr>
+<tr>
+<td>Vogais sustentadas</td>
+<td>Exemplo com vogal sustentada</td>
+<td>Aviso automático</td>
+</tr>
+<tr>
+<td>Interface</td>
+<td>Tkinter + Matplotlib</td>
+<td>PySide6 + pyqtgraph, português e inglês</td>
+</tr>
+<tr>
+<td>Licença</td>
+<td>MIT e EULA contraditórias</td>
+<td>Apache 2.0 com NOTICE (crédito obrigatório ao autor)</td>
+</tr>
+<tr>
+<td>Dependência</td>
+<td><code>parselmouth</code> (pacote errado)</td>
+<td><code>praat-parselmouth</code></td>
+</tr>
+</tbody>
+</table>
+<p>Para comparar resultados antigos e novos nos mesmos arquivos: <code>python tools/compare_v1.py arquivo.wav</code>.</p>
+<h2>13. Referências e licença</h2>
+<ul>
+<li>Lã FMB, Silva LS, Granqvist S. Long-term average spectrum characteristics of Portuguese Fado-Canção from
+  Coimbra. <em>Journal of Voice</em> 37(4):631.e7–631.e15, 2023.</li>
+<li>Sundberg J. Level and center frequency of the singer's formant. <em>Journal of Voice</em> 15(2):176–186, 2001.</li>
+<li>Sundberg J. The singer's formant revisited. STL-QPSR 36(2–3):83–96, 1995.</li>
+<li>Boersma P, Weenink D. Praat; Jadoul Y, Thompson B, de Boer B. Introducing Parselmouth. <em>J Phonetics</em> 71:1–15, 2018.</li>
+</ul>
+<p>Licença Apache 2.0: uso, modificação e redistribuição livres, desde que o arquivo NOTICE e o crédito ao autor sejam
+mantidos. Para citar o programa, veja <code>CITATION.cff</code>. Contato: fonotechacademy@gmail.com.</p></body></html>

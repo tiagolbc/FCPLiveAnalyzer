@@ -1,0 +1,22 @@
+FCP Live Analyzer
+Copyright 2025-2026 Tiago Lima Bicalho Cruz (fonotechacademy@gmail.com)
+
+This product was created by Tiago Lima Bicalho Cruz. Under the Apache License 2.0
+(see LICENSE), any redistribution or derivative work must keep this NOTICE file
+and credit the original author, for example:
+
+  "Based on FCP Live Analyzer by Tiago Lima Bicalho Cruz
+   (https://github.com/tiagolbc/FCPLiveAnalyzer)."
+
+Scientific use: please cite the software (see CITATION.cff) and the paper that
+defines the measure:
+  Lã FMB, Silva LS, Granqvist S. Long-term average spectrum characteristics of
+  Portuguese Fado-Canção from Coimbra. Journal of Voice 37(4):631.e7-631.e15, 2023.
+
+Third-party components distributed with the Windows executable keep their own
+licenses, notably: Praat via praat-parselmouth (GPL-3.0-or-later), PySide6 / Qt
+(LGPL-3.0), NumPy and SciPy (BSD-3-Clause), pyqtgraph (MIT), sounddevice (MIT),
+soundfile / libsndfile (BSD-3-Clause / LGPL-2.1), PortAudio (MIT-style),
+Matplotlib (PSF-based). Because the executable bundles GPL-licensed Praat code,
+the executable as a whole is distributed under GPL-3.0-compatible terms; the
+source code of FCP Live Analyzer itself is licensed under Apache-2.0.
