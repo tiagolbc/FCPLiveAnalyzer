@@ -1,18 +1,21 @@
 # Builds FCP Live Analyzer for macOS (Apple Silicon and Intel) and Windows on GitHub's servers.
-# Run it from the repository's "Actions" tab ("Run workflow") or by pushing a tag v2.*.
+# Runs automatically on every push to the v2.0 branch (and on tags v2.*); "Run workflow" in the
+# Actions tab appears once this file is on the default branch.
 # The DMG / Setup files appear as downloadable artifacts of the run.
 name: build
 
 on:
   workflow_dispatch:
   push:
+    branches: ["v2.0"]
     tags: ["v2.*"]
 
 jobs:
   macos:
     strategy:
+      fail-fast: false
       matrix:
-        os: [macos-14, macos-13]   # arm64 (Apple Silicon), x86_64 (Intel)
+        os: [macos-latest, macos-15-intel]   # arm64 (Apple Silicon), x86_64 (Intel)
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
